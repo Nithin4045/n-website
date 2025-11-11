@@ -1,4 +1,4 @@
-name: CD - Deploy to Vercel
+name: Deploy to My Windows Server
 
 on:
   push:
@@ -13,23 +13,27 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
+      - name: Upload files to server
+        uses: appleboy/scp-action@v0.1.7
         with:
-          node-version: 20.11.0
+          host: ${{ secrets.SERVER_IP }}
+          username: ${{ secrets.SERVER_USER }}
+          password: ${{ secrets.SERVER_PASSWORD }}
+          source: "."
+          target: ${{ secrets.SERVER_PATH }}
 
-      - name: Install Vercel CLI
-        run: npm install -g vercel
+      - name: Build & Restart app on server
+        uses: appleboy/ssh-action@v0.1.8
+        with:
+          host: ${{ secrets.SERVER_IP }}
+          username: ${{ secrets.SERVER_USER }}
+          password: ${{ secrets.SERVER_PASSWORD }}
+          script: |
+            cd ${{ secrets.SERVER_PATH }}
+            npm install
+            npm run build
+            pm2 delete n-website || true
+            pm2 start "npm run start" --name n-website
+            pm2 save
 
-      - name: Check Vercel Token Exists
-        run: |
-          if [ -z "${{ secrets.VERCEL_TOKEN }}" ]; then
-            echo "ERROR: VERCEL_TOKEN secret is missing!"
-            exit 1
-          else
-            echo "VERCEL_TOKEN exists ✅"
-          fi
-
-      - name: Deploy to Vercel
-        run: vercel deploy --prod --token=${{ secrets.VERCEL_TOKEN }} --yes
 
