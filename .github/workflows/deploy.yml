@@ -22,17 +22,17 @@ jobs:
           target: ${{ secrets.SERVER_PATH }}
           rm: true
           source: |
+            app/**
+            public/**
             package.json
             package-lock.json
-            next.config.*
+            next.config.ts
             tsconfig.json
-            public/**
-            app/**
-            components/**
-            styles/**
-            lib/**
-            src/**
-      
+            eslint.config.mjs
+            postcss.config.mjs
+            next-env.d.ts
+            README.md
+
       - name: Build & Restart app on server
         uses: appleboy/ssh-action@v0.1.8
         with:
@@ -46,4 +46,5 @@ jobs:
             pm2 delete n-website || true
             pm2 start "npm run start" --name n-website
             pm2 save
+
 
