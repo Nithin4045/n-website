@@ -52,6 +52,9 @@ export default function DashboardPage() {
           <h2>Orders</h2>
           <p>{stats?.orders}</p>
         </div>
+        <div>
+          <h2>place order</h2>
+        </div>
       </div>
     </div>
   );
