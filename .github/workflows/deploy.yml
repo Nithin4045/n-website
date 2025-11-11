@@ -12,7 +12,13 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-      
+
+      - name: Move into project folder (fix nested folder issue)
+        run: |
+          if [ -d "./n-website" ]; then
+            mv ./n-website/* ./
+          fi
+
       - name: Upload project to server
         uses: appleboy/scp-action@v0.1.7
         with:
