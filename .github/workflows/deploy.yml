@@ -12,16 +12,27 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-
-      - name: Upload files to server
+      
+      - name: Upload project to server
         uses: appleboy/scp-action@v0.1.7
         with:
           host: ${{ secrets.SERVER_IP }}
           username: ${{ secrets.SERVER_USER }}
           password: ${{ secrets.SERVER_PASSWORD }}
-          source: "."
           target: ${{ secrets.SERVER_PATH }}
-
+          rm: true
+          source: |
+            package.json
+            package-lock.json
+            next.config.*
+            tsconfig.json
+            public/**
+            app/**
+            components/**
+            styles/**
+            lib/**
+            src/**
+      
       - name: Build & Restart app on server
         uses: appleboy/ssh-action@v0.1.8
         with:
@@ -35,5 +46,4 @@ jobs:
             pm2 delete n-website || true
             pm2 start "npm run start" --name n-website
             pm2 save
-
 
