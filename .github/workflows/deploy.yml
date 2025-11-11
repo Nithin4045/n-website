@@ -16,5 +16,16 @@ jobs:
       - name: Install Vercel CLI
         run: npm install -g vercel
 
+      - name: Check Vercel Token Exists
+        run: |
+          if [ -z "${{ secrets.VERCEL_TOKEN }}" ]; then
+            echo "ERROR: VERCEL_TOKEN secret is missing!"
+            exit 1
+          else
+            echo "VERCEL_TOKEN exists ✅"
+            echo "${{ secrets.VERCEL_TOKEN }}" | sed 's/./*/g'
+          fi
+
       - name: Deploy to Vercel
-        run: vercel --prod --token=${{ secrets.VERCEL_TOKEN }} --yes --confirm --prod
+        run: vercel --prod --token=${{ secrets.VERCEL_TOKEN }} --yes --confirm
+
