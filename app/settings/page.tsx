@@ -2,8 +2,13 @@
 
 import React, { useEffect, useState } from "react";
 
+interface Settings {
+  theme: string;
+  notifications: boolean;
+}
+
 export default function SettingsPage() {
-  const [settings, setSettings] = useState(null);
+  const [settings, setSettings] = useState<Settings | null>(null);
 
   const loadSettings = async () => {
     const res = await fetch("/api/settings");
